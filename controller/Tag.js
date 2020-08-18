@@ -12,12 +12,14 @@ module.exports.create = (req, res) => {
         nodes: []
     });
 
+    console.log("newTag: ", newTag);
+
     newTag.save()
         .then(newTag => res.json(newTag))
         .catch(err => {
             console.log(err);
             res.json(err);
-        })
+        });
 };
 
 module.exports.edit = (req, res) => {
@@ -61,9 +63,11 @@ module.exports.delete = (req, res) => {
         tagId
     } = req.params;
 
+    console.log("tagId: ", tagId);
+
     Tag.deleteOne({
-            _id: tagId
-        })
+        _id: tagId
+    })
         .then(result => res.json(result))
         .catch(err => res.status(500).send({
             msg: `Couldn't delete the tag: ${tagId}`,
@@ -77,8 +81,8 @@ module.exports.get = (req, res) => {
     } = req.params;
 
     Tag.findOne({
-            _id: idTag
-        })
+        _id: idTag
+    })
         .then(foundTag => res.json(foundTag))
         .catch(err => res.status(500).send({
             msg: `Couldn't get the tag: ${idTag}`,
@@ -87,8 +91,8 @@ module.exports.get = (req, res) => {
 };
 
 module.exports.getAll = (req, res) => {
-    Tag.find()
-        .then(result => res.json(result))
+    Tag.find({})
+        .then(result =>  res.json(result ))
         .catch(err => res.status(500).send({
             msg: `Couldn't get the tags`,
             err

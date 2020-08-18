@@ -4,12 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var nodeRoute = require('./routes/node');
 var tagRoute = require('./routes/tag');
 
 var app = express();
+
+/* allow all origins */
+app.use(cors())
 
 /* connect to database */
 const database_ul = require('./Utils/database');
@@ -40,5 +44,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({error: err});
 });
+
 
 module.exports = app;

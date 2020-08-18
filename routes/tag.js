@@ -4,9 +4,9 @@ var tagController = require("./../controller/Tag");
 
 /* CRUD */
 router.post('/', tagController.create);
-router.get('/:tagId', tagController.get);
-router.put('/:tagId', tagController.edit);
-router.delete('/:tagId', tagController.delete);
+router.get('/id/:tagId', tagController.get);
+router.put('/id/:tagId', tagController.edit);
+router.delete('/id/:tagId', tagController.delete);
 
 /* additional functionalities */
 router.get('/all', tagController.getAll);

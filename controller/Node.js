@@ -67,8 +67,8 @@ module.exports.delete = (req, res) => {
     } = req.params;
 
     Node.deleteOne({
-            _id: nodeId
-        })
+        _id: nodeId
+    })
         .then(result => res.json(result))
         .catch(err => res.status(500).send({
             msg: `failed to delete ${nodeId}`,
@@ -82,8 +82,8 @@ module.exports.get = (req, res) => {
     } = req.params;
 
     Node.findOne({
-            _id: nodeId
-        })
+        _id: nodeId
+    })
         .then(result => res.json(result))
         .catch(err => result.status(500).send({
             msg: `failed to find ${nodeId}`,
@@ -93,7 +93,9 @@ module.exports.get = (req, res) => {
 
 module.exports.getAll = (req, res) => {
     Node.find({})
-        .then(result => res.json(result))
+        .then(result => {
+            res.json({ result });
+        })
         .catch(err => res.status(500).send({
             msg: `Coudln't get all Nodes`,
             err
@@ -101,10 +103,10 @@ module.exports.getAll = (req, res) => {
 };
 
 module.exports.getByTag = (req, res) => {
-    const {tagId} = req.params;
+    const { tagId } = req.params;
     console.log("getByTag: ", tagId)
 
-    Tag.findById(tagId).populate("nodes").then(result => res.json(result)).catch(err => res.status(500).send(err));    
+    Tag.findById(tagId).populate("nodes").then(result => res.json(result)).catch(err => res.status(500).send(err));
 };
 
 module.exports.addTagToNode = (req, res) => {
@@ -115,32 +117,32 @@ module.exports.addTagToNode = (req, res) => {
     } = req.params;
 
     Tag.findOne({
-            _id: tagId
-        })
+        _id: tagId
+    })
         .then(foundTag => {
             console.log("foundTag: ", foundTag);
 
             Node.findByIdAndUpdate(
-                    nodeId, {
-                        $push: {
-                            tags: foundTag._id
-                        }
-                    }, {
-                        new: true,
-                        useFindAndModify: false
-                    }
-                ).then(foundNode => {
-                    console.log("foundNode: ", foundNode)
-                    foundTag.nodes.push(nodeId)
-                    foundTag.save()
-                        .then(result => res.json({
-                            result
-                        }))
-                        .catch(err => res.status(500).send({
-                            err
-                        }));
+                nodeId, {
+                $push: {
+                    tags: foundTag._id
+                }
+            }, {
+                new: true,
+                useFindAndModify: false
+            }
+            ).then(foundNode => {
+                console.log("foundNode: ", foundNode)
+                foundTag.nodes.push(nodeId)
+                foundTag.save()
+                    .then(result => res.json({
+                        result
+                    }))
+                    .catch(err => res.status(500).send({
+                        err
+                    }));
 
-                })
+            })
                 .catch(err => res.status(500)
                     .send({
                         err
@@ -153,13 +155,13 @@ module.exports.addTagToNode = (req, res) => {
 };
 
 module.exports.contentCreate = (req, res) => {
-    const {nodeId} = req.params;
-    const {subtitle, paragraph} = req.body;
+    const { nodeId } = req.params;
+    const { subtitle, paragraph } = req.body;
     const newContent = {
         subtitle, paragraph
     }
 
-    Node.findOne({_id: nodeId})
+    Node.findOne({ _id: nodeId })
         .then(foundNode => {
             foundNode.content.push(newContent);
             foundNode.save().then(result => res.json(result)).catch(err => res.status(500).send(err));
@@ -168,30 +170,30 @@ module.exports.contentCreate = (req, res) => {
 }
 
 module.exports.contentEdit = (req, res) => {
-    const {nodeId, contentId} = req.params;
+    const { nodeId, contentId } = req.params;
     console.log("nodeId: ", nodeId);
-    const {subtitle, paragraph} = req.body;
+    const { subtitle, paragraph } = req.body;
 
-    Node.findOne({_id: nodeId})
+    Node.findOne({ _id: nodeId })
         .then(foundNode => {
 
             let contentIndex = foundNode.content.findIndex((obj => obj._id == contentId));
             console.log(contentIndex)
-            if(contentIndex === -1) throw 'Index of content not found';
+            if (contentIndex === -1) throw 'Index of content not found';
             if (paragraph != null) foundNode.content[contentIndex].paragraph = paragraph;
             if (subtitle != null) foundNode.content[contentIndex].subtitle = subtitle;
 
-            foundNode.save().then(result => res.json(result)).catch(err => res.status(500).send({err, msg: 'content not found'}));
+            foundNode.save().then(result => res.json(result)).catch(err => res.status(500).send({ err, msg: 'content not found' }));
         })
-        .catch(err => res.status(500).send({err, msg: 'no node found'}));
+        .catch(err => res.status(500).send({ err, msg: 'no node found' }));
 }
 
-module.exports.contentDelete = (req, res) => {    
-    const {nodeId, contentId} = req.params;
+module.exports.contentDelete = (req, res) => {
+    const { nodeId, contentId } = req.params;
 
-    Node.findOne({_id: nodeId})
+    Node.findOne({ _id: nodeId })
         .then(foundNode => {
-            foundNode.content.pull({_id: contentId});
+            foundNode.content.pull({ _id: contentId });
             foundNode.save().then(result => res.json(result)).catch(err => res.status(500).send(err));
         })
         .catch(err => res.status(500).send(err));

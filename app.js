@@ -16,8 +16,9 @@ var app = express();
 app.use(cors())
 
 /* connect to database */
-const database_ul = require('./Utils/database');
+const database_ul = require('./Utils/database').database;
 const mongoDB = `mongodb://${database_ul.username}:${database_ul.password}@ds127604.mlab.com:27604/lite-wiki`;
+console.log(mongoDB);
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true}).then(r => console.log('connected to database'));
 
 app.use(logger('dev'));

@@ -198,3 +198,13 @@ module.exports.contentDelete = (req, res) => {
         })
         .catch(err => res.status(500).send(err));
 }
+
+module.exports.getAllTitlesAndId = (req, res) => {
+    console.log("getAllTitlesAndId")
+    Node.find(null, '_id title')
+        .then(result => res.json(result))
+        .catch((err) => {
+            console.log("intrat in catch")
+            res.status(500).send(err)
+        })
+}

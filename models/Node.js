@@ -12,6 +12,10 @@ const NodeSchema = new Schema({
             id: mongoose.ObjectId
         }]
     },
+    parent: {
+        type: Schema.Types.ObjectId,
+        ref: "Node"
+    },
     childrenNodes: [{
         type: Schema.Types.ObjectId,
         ref: "Node"

@@ -10,6 +10,7 @@ router.delete('/id/:nodeId', nodeController.delete);
 
 /* additional functionalities */
 router.get('/all', nodeController.getAll);
+router.get('/all/titleAndId', nodeController.getAllTitlesAndId);
 router.get('/byTag/:tagId', nodeController.getByTag);
 
 /* add a tag to node */

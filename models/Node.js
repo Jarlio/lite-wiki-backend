@@ -7,8 +7,8 @@ const NodeSchema = new Schema({
     introduction: String,
     content: {
         type: [{
-            subtitle: String,
-            paragraph: String,
+            type: String,
+            data: Object,
             id: mongoose.ObjectId
         }]
     },

@@ -4,14 +4,7 @@ const Schema = mongoose.Schema;
 
 const NodeSchema = new Schema({
     title: String,
-    introduction: String,
-    content: {
-        type: [{
-            type: String,
-            data: Object,
-            id: mongoose.ObjectId
-        }]
-    },
+    content: Object,
     parent: {
         type: Schema.Types.ObjectId,
         ref: "Node"

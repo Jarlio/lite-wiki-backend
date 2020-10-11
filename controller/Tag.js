@@ -8,11 +8,8 @@ module.exports.create = (req, res) => {
 
     const newTag = new Tag({
         name,
-        description,
-        nodes: []
+        description
     });
-
-    console.log("newTag: ", newTag);
 
     newTag.save()
         .then(newTag => res.json(newTag))

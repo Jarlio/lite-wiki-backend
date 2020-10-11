@@ -17,8 +17,6 @@ router.get('/byTag/:tagId', nodeController.getByTag);
 router.post('/addTagToNode/:nodeId/:tagId', nodeController.addTagToNode);
 
 /* content */
-router.post('/content/:nodeId', nodeController.contentCreate);
-router.put('/content/:nodeId/:contentId', nodeController.contentEdit);
-router.delete('/content/:nodeId/:contentId', nodeController.contentDelete);
+router.patch('/content/:nodeId', nodeController.contentEdit);
 
 module.exports = router;

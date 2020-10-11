@@ -5,14 +5,12 @@ const { json } = require('express');
 module.exports.create = (req, res) => {
     const {
         title,
-        introduction
     } = req.body;
 
     // TODO: adaugat node in caz
     const node = new Node({
         title,
-        introduction,
-        content: [],
+        content: {},
         childrenNodes: [],
         tags: []
     });
@@ -28,9 +26,12 @@ module.exports.create = (req, res) => {
 module.exports.edit = (req, res) => {
     const {
         title,
-        introduction
+        content,
+        tags
     } = req.body;
+    console.log("tagsTemp", tags);
 
+    const tagsTemp = tags.map(element => element._id);
     const {
         nodeId
     } = req.params;
@@ -50,7 +51,8 @@ module.exports.edit = (req, res) => {
         // TODO: check if the strings are null, implement utility functions
 
         foundNode.title = title;
-        foundNode.introduction = introduction;
+        foundNode.content = content;
+        foundNode.tags = tagsTemp;
 
         foundNode.save()
             .then(savedTag => res.json(savedTag))
@@ -85,7 +87,7 @@ module.exports.get = (req, res) => {
         _id: nodeId
     })
         .then(result => res.json(result))
-        .catch(err => result.status(500).send({
+        .catch(err => res.status(500).send({
             msg: `failed to find ${nodeId}`,
             err
         }));
@@ -104,7 +106,6 @@ module.exports.getAll = (req, res) => {
 
 module.exports.getByTag = (req, res) => {
     const { tagId } = req.params;
-    console.log("getByTag: ", tagId)
 
     Tag.findById(tagId).populate("nodes").then(result => res.json(result)).catch(err => res.status(500).send(err));
 };
@@ -154,57 +155,25 @@ module.exports.addTagToNode = (req, res) => {
 
 };
 
-module.exports.contentCreate = (req, res) => {
-    const { nodeId } = req.params;
-    const { subtitle, paragraph } = req.body;
-    const newContent = {
-        subtitle, paragraph
-    }
-
-    Node.findOne({ _id: nodeId })
-        .then(foundNode => {
-            foundNode.content.push(newContent);
-            foundNode.save().then(result => res.json(result)).catch(err => res.status(500).send(err));
-        })
-        .catch(err => res.status(500).send(err));
-}
-
 module.exports.contentEdit = (req, res) => {
-    const { nodeId, contentId } = req.params;
-    console.log("nodeId: ", nodeId);
-    const { subtitle, paragraph } = req.body;
-
-    Node.findOne({ _id: nodeId })
-        .then(foundNode => {
-
-            let contentIndex = foundNode.content.findIndex((obj => obj._id == contentId));
-            console.log(contentIndex)
-            if (contentIndex === -1) throw 'Index of content not found';
-            if (paragraph != null) foundNode.content[contentIndex].paragraph = paragraph;
-            if (subtitle != null) foundNode.content[contentIndex].subtitle = subtitle;
-
-            foundNode.save().then(result => res.json(result)).catch(err => res.status(500).send({ err, msg: 'content not found' }));
-        })
-        .catch(err => res.status(500).send({ err, msg: 'no node found' }));
-}
-
-module.exports.contentDelete = (req, res) => {
-    const { nodeId, contentId } = req.params;
-
-    Node.findOne({ _id: nodeId })
-        .then(foundNode => {
-            foundNode.content.pull({ _id: contentId });
-            foundNode.save().then(result => res.json(result)).catch(err => res.status(500).send(err));
-        })
-        .catch(err => res.status(500).send(err));
+    res.json({msg: "edit content"});
 }
 
 module.exports.getAllTitlesAndId = (req, res) => {
-    console.log("getAllTitlesAndId")
     Node.find(null, '_id title')
         .then(result => res.json(result))
         .catch((err) => {
             console.log("intrat in catch")
             res.status(500).send(err)
         })
+}
+
+/* Tree of child nodes projected in an array. Feature funcionality, irrelevant atm */
+module.exports.getChildId = (req, res) => {
+    const { tagId } = req.params;
+    let arrayOfChildTags = [];
+
+    function pushChildNodes(id){
+        Node.find(id, '_id childs')
+    }
 }
